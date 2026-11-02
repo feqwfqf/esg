@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "package": "cc.coffee.modern.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "CameraMixin",
+    "LightmapMixin",
+    "OptionsMixin",
+    "MouseHandlerMixin",
+    "KeyboardInputMixin",
+    "ClientLevelMixin",
+    "ClientPacketListenerMixin",
+    "TelemetryMixin",
+    "NoJumpDelayMixin",
+    "FastPlaceMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

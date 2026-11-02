@@ -1,64 +1,37 @@
 plugins {
-    id 'java'
+    id 'net.fabricmc.fabric-loom' version '1.19.3'
 }
 
-group = 'cc.simp'
-version = '1.8.9'
+group = 'cc.coffee'
+version = '2.0.0+26.3'
 
-repositories {
-    mavenCentral()
-    maven {
-        url('https://repo.marcloud.net/')
-        name('marCloud-Repository')
-    }
-    maven {
-        url "https://libraries.minecraft.net/"
-    }
-    maven {
-        url "https://mvnrepository.com/artifact"
-    }
-    maven {
-        url = "https://repo.viaversion.com/"
+repositories { mavenCentral() }
+// The bundled 1.8.9 game sources remain reference material during migration.
+sourceSets {
+    main {
+        java.srcDirs = ['src/modern/java']
+        resources.srcDirs = ['src/modern/resources']
     }
 }
 
 dependencies {
-    implementation "io.netty:netty-all:4.0.23.Final"
-    implementation "com.mojang:patchy:1.7.7"
-    implementation "net.sf.jopt-simple:jopt-simple:4.6"
-    implementation "org.lwjgl:lwjgl:2.9.4-nightly"
-    implementation "org.lwjgl:util:2.9.4-nightly"
-    implementation "net.java.jinput:jinput:2.0.5"
-    implementation "com.mojang:icu4j-core-mojang:51.2"
-    implementation "org.apache.httpcomponents:httpclient:4.3.3"
-    implementation "org.apache.httpcomponents:httpcore:4.3.2"
-    implementation "org.projectlombok:lombok:1.18.38"
-    implementation "oshi:oshi-core:1.1"
-    implementation "net.java.dev.jna:jna:3.4.0"
-    implementation "net.java.dev.jna:platform:3.4.0"
-    implementation "net.java.jutils:jutils:1.0.0"
-    implementation "commons-logging:commons-logging:1.1.3"
-    implementation "org.apache.commons:commons-compress:1.8.1"
-    implementation "org.apache.logging.log4j:log4j-api:2.0-beta9"
-    implementation "org.apache.logging.log4j:log4j-core:2.0-beta9"
-    implementation "org.json:json:20250517"
-    implementation "tv.twitch:twitch:6.5"
-    implementation "com.google.guava:guava:17.0"
-    implementation "org.apache.commons:commons-lang3:3.3.2"
-    implementation "commons-io:commons-io:2.4"
-    implementation "commons-codec:commons-codec:1.9"
-    implementation "com.google.code.gson:gson:2.2.4"
-    implementation "com.paulscode.sound:libraryjavasound:20101123"
-    implementation "com.paulscode.sound:codecwav:20101023"
-    implementation "com.paulscode.sound:soundsystem:20120107"
-    implementation "com.paulscode.sound:codecjorbis:20101023"
-    implementation "com.paulscode.sound:librarylwjglopenal:20100824"
-    implementation "com.mojang:authlib:1.5.21"
-    implementation fileTree('extra')
+    minecraft 'com.mojang:minecraft:26.3'
+    implementation 'net.fabricmc:fabric-loader:0.20.1'
+    implementation 'net.fabricmc.fabric-api:fabric-api:0.165.0+26.3'
+    testImplementation platform('org.junit:junit-bom:5.14.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-jar {
-    manifest {
-        attributes 'Main-Class': 'StartBuilt'
-    }
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+    withSourcesJar()
 }
+
+tasks.withType(JavaCompile).configureEach { options.release = 25 }
+test { useJUnitPlatform() }
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') { expand version: project.version }
+}
+jar { from('LICENSE') { rename { 'LICENSE_coffee' } } }
